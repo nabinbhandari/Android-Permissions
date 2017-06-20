@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Android-Runtime-Permissions.iml" filepath="$PROJECT_DIR$/Android-Runtime-Permissions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-permissions/android-permissions.iml" filepath="$PROJECT_DIR$/android-permissions/android-permissions.iml" />
+    </modules>
+  </component>
+</project>

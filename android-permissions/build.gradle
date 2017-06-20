@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'android-permissions'
+
+    publishedGroupId = 'com.nabinbhandari.android.utils.permissions'
+    libraryName = 'android-permissions'
+    artifact = 'android-permissions'
+
+    libraryDescription = 'Library for easy handling of runtime permissions in android.'
+
+    siteUrl = 'https://github.com/nabinbhandari/Android-Permissions'
+    gitUrl = 'https://github.com/nabinbhandari/Android-Permissions.git'
+
+    libraryVersion = '1.0'
+
+    developerId = 'nabin'
+    developerName = 'Nabin Bhandari'
+    developerEmail = 'bnabin51@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 1
+        targetSdkVersion 25
+        versionCode 1
+        versionName "$libraryVersion"
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
