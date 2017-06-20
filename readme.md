@@ -1,4 +1,57 @@
-**Android Runtime Permission Library**
+Android Runtime Permission Library
+==================================
+Easily handle runtime permissions in android.
+
+ * Short code.
+ * Handle "don't ask again" condition.
+ * Open source.
+ * Light weight.
+
+Dependency:
+-----------
+
+**Gradle (Jcenter)**
+```
+compile 'com.nabinbhandari.android.utils.permissions:android-permissions:1.0'
+```
+    
+    
+**Maven**
+```
+<dependency>
+  <groupId>com.nabinbhandari.android.utils.permissions</groupId>
+  <artifactId>android-permissions</artifactId>
+  <version>1.0</version>
+  <type>pom</type>
+</dependency>
+```    
+
+Usage:
+------
+
+```java
+Permissions.runPermissionCheck(this, 2002, "Permission needed..",
+        new PermissionListener() {
+            @Override
+            public void onPermissionGranted(int requestCode) {
+                //do task
+            }
+
+            @Override
+            public void onPermissionDenied(int requestCode) {
+                //show error
+            }
+        }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA);
+```
+
+```java
+@Override
+public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+        @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+}
+```
 
 ## LICENSE
 
