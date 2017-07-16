@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Android-Permissions.iml" filepath="$PROJECT_DIR$/Android-Permissions.iml" />
       <module fileurl="file://$PROJECT_DIR$/Android-Runtime-Permissions.iml" filepath="$PROJECT_DIR$/Android-Runtime-Permissions.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-permissions/android-permissions.iml" filepath="$PROJECT_DIR$/android-permissions/android-permissions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/permissions/permissions.iml" filepath="$PROJECT_DIR$/permissions/permissions.iml" />
     </modules>
   </component>
 </project>

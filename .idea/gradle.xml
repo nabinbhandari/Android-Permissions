@@ -8,7 +8,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/android-permissions" />
+            <option value="$PROJECT_DIR$/permissions" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

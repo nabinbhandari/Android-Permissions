@@ -1,19 +1,19 @@
 apply plugin: 'com.android.library'
 
 ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'android-permissions'
+    bintrayRepo = 'android'
+    bintrayName = 'permissions'
 
-    publishedGroupId = 'com.nabinbhandari.android.utils.permissions'
-    libraryName = 'android-permissions'
-    artifact = 'android-permissions'
+    publishedGroupId = 'com.nabinbhandari.android'
+    libraryName = 'permissions'
+    artifact = 'permissions'
 
     libraryDescription = 'Library for easy handling of runtime permissions in android.'
 
     siteUrl = 'https://github.com/nabinbhandari/Android-Permissions'
     gitUrl = 'https://github.com/nabinbhandari/Android-Permissions.git'
 
-    libraryVersion = '1.0'
+    libraryVersion = '2.0'
 
     developerId = 'nabin'
     developerName = 'Nabin Bhandari'
@@ -31,7 +31,7 @@ android {
     defaultConfig {
         minSdkVersion 1
         targetSdkVersion 25
-        versionCode 1
+        versionCode 2
         versionName "$libraryVersion"
     }
 }
