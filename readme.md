@@ -3,25 +3,27 @@ Android Runtime Permission Library
 Easily handle runtime permissions in android.
 
  * Short code.
+ * Can check multiple permissions at once.
  * Handle "don't ask again" condition.
  * Open source.
  * Light weight.
+ * Fully customizable.
 
 Dependency:
 -----------
 
 **Gradle (Jcenter)**
 ```
-compile 'com.nabinbhandari.android.utils.permissions:android-permissions:1.0'
+compile 'com.nabinbhandari.android:permissions:2.0'
 ```
     
     
 **Maven**
 ```
 <dependency>
-  <groupId>com.nabinbhandari.android.utils.permissions</groupId>
-  <artifactId>android-permissions</artifactId>
-  <version>1.0</version>
+  <groupId>com.nabinbhandari.android</groupId>
+  <artifactId>permissions</artifactId>
+  <version>2.0</version>
   <type>pom</type>
 </dependency>
 ```    
@@ -30,28 +32,25 @@ Usage:
 ------
 
 ```java
-Permissions.runPermissionCheck(this, 2002, "Permission needed..",
-        new PermissionListener() {
-            @Override
-            public void onPermissionGranted(int requestCode) {
-                //do task
-            }
-
-            @Override
-            public void onPermissionDenied(int requestCode) {
-                //show error
-            }
-        }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA);
+Permissions.runPermissionCheck(this, rationale, new PermissionHandler() {
+    @Override
+    public void onGranted() {
+        //do the task.
+    }
+}, Manifest.permission.CALL_PHONE, Manifest.permission.READ_CONTACTS); //as many as you need.
 ```
 
 ```java
 @Override
 public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-        @NonNull int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+                                       @NonNull int[] grantResults) {
+    Permissions.onRequestPermissionsResult(this, permissions, grantResults);
 }
 ```
+
+ * You can also override other methods like onDenied, onSetNotToAskAgain, etc if you want to change the default behaviour.
+ * Dialog messages and texts can be modified by changing the values of public variables in the 'Permissions' class.
+ 
 
 ## LICENSE
 
