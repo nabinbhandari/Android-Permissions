@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,17 +25,18 @@ import java.util.List;
  *
  * @author Nabin Bhandari
  */
-@SuppressWarnings("WeakerAccess")
-public class Permissions {
+public class Permissions extends Activity {
 
     /**
      * Dialog title for showing permission rationale, or while asking user to go to settings.
      */
     public static String dialogTitle = "Permission Required";
+
     /**
      * The button text for "settings" while asking user to go to settings.
      */
     public static String settingsText = "Settings";
+
     /**
      * The message to be shown in the dialog if some permissions have been set not to ask again.
      */
@@ -42,13 +44,20 @@ public class Permissions {
             " not to ask again! Please provide them from settings.";
 
     /**
-     * The request-code using which intent will be started to go to settings.
+     * If a user has forcefully denied some permissions and has been sent to settings, and if
+     * permission should not be checked again, this flag should be set to false.
      */
-    public static int requestCodeForSettings = 6739;
+    public static boolean recheckPermissionsAfterSettings = true;
+
+    private static final int RC_SETTINGS = 6739;
     private static final int RC_PERMISSION = 6937;
     private static final String TAG = "Permissions";
+    private static final String EXTRA_PERMISSIONS = "extra_permissions";
 
+    private static boolean cleanHandlerOnDestroy = true;
     private static PermissionHandler permissionHandler;
+
+    private String[] permissions;
 
     /**
      * Runs permission check and calls the callback methods of permission listener accordingly.
@@ -81,7 +90,7 @@ public class Permissions {
             }
             if (allPermissionProvided) {
                 permissionHandler.onGranted();
-                Log.d(TAG, "Permission" + (otherPermissions.length == 0 ? "" : "s") + " already granted.");
+                Log.d(TAG, "Permission(s) already granted.");
             } else {
                 boolean rationaleShouldBeShown = false;
                 if (TextUtils.isEmpty(rationale)) {
@@ -92,7 +101,6 @@ public class Permissions {
                         break;
                     }
                 }
-
                 if (rationaleShouldBeShown) {
                     new AlertDialog.Builder(activity).setTitle(dialogTitle)
                             .setMessage(rationale)
@@ -119,27 +127,42 @@ public class Permissions {
     @TargetApi(Build.VERSION_CODES.M)
     private static void requestPermissions(Activity activity, List<String> permissions,
                                            PermissionHandler permissionHandler) {
-        activity.requestPermissions(permissions.toArray(new String[0]), RC_PERMISSION);
+        cleanHandlerOnDestroy = false;
         Permissions.permissionHandler = permissionHandler;
+        Intent intent = new Intent(activity, Permissions.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.putExtra(EXTRA_PERMISSIONS, permissions.toArray(new String[0]));
+        activity.startActivity(intent);
     }
 
-    /**
-     * <p>
-     * This method must be called inside the {@link Activity#onRequestPermissionsResult(int, String[], int[])} as follows:</p>
-     * <pre><code>
-     * public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-     *     Permissions.onRequestPermissionsResult(this, permissions, grantResults);
-     * }
-     * </code></pre>
-     *
-     * @param activity     The activity
-     * @param permissions  the array of permissions
-     * @param grantResults the results of permission request.
-     */
-    public static void onRequestPermissionsResult(Activity activity, String[] permissions, int[] grantResults) {
-        if (permissionHandler == null) return;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getIntent().hasExtra(EXTRA_PERMISSIONS)) {
+            permissions = getIntent().getStringArrayExtra(EXTRA_PERMISSIONS);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permissions != null
+                    && permissions.length > 0) {
+                requestPermissions(permissions, RC_PERMISSION);
+                new android.os.Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        cleanHandlerOnDestroy = true;
+                    }
+                }, 1000);
+            } else finish();
+        } else finish();
+    }
+
+    @SuppressWarnings("NullableProblems")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (permissionHandler == null) {
+            finish();
+            return;
+        }
         if (grantResults.length == 0) {
-            permissionHandler.onDenied(activity, Arrays.asList(permissions));
+            permissionHandler.onDenied(this, Arrays.asList(this.permissions));
+            finish();
         } else {
             boolean allPermissionsGranted = true;
             for (int grantResult : grantResults) {
@@ -150,11 +173,11 @@ public class Permissions {
             }
             if (allPermissionsGranted) {
                 permissionHandler.onJustGranted();
+                finish();
             } else {
-                handlePermissionsSetNotToAskAgain(activity, permissions, permissionHandler);
+                handlePermissionsSetNotToAskAgain(permissions, permissionHandler);
             }
         }
-        permissionHandler = null;
     }
 
     /**
@@ -165,19 +188,18 @@ public class Permissions {
      * <br/>
      * <strong>Note: This function must be called from inside the onRequestPermissionsResult() method.</strong>
      *
-     * @param activity    The activity for checking permissions.
      * @param permissions The array of permissions passed in the callback function onRequestPermissionsResult().
      */
-    private static void handlePermissionsSetNotToAskAgain(final Activity activity, String[] permissions,
-                                                          final PermissionHandler permissionHandler) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+    @TargetApi(Build.VERSION_CODES.M)
+    private void handlePermissionsSetNotToAskAgain(String[] permissions,
+                                                   final PermissionHandler permissionHandler) {
         final List<String> deniedPermissions = new ArrayList<>();
         List<String> permissionsWhichCantBeAsked = new ArrayList<>();
         for (String permission : permissions) {
-            if (activity.shouldShowRequestPermissionRationale(permission)) {
+            if (shouldShowRequestPermissionRationale(permission)) {
                 Log.d(TAG, permission + " denied.");
                 deniedPermissions.add(permission);
-            } else if (activity.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+            } else if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "Cant't ask " + permission + " again.");
                 permissionsWhichCantBeAsked.add(permission);
                 deniedPermissions.add(permission);
@@ -185,9 +207,11 @@ public class Permissions {
         }
 
         if (permissionsWhichCantBeAsked.size() == 0) {
-            permissionHandler.onDenied(activity, deniedPermissions);
-        } else if (!permissionHandler.onSetNotToAskAgain(permissionsWhichCantBeAsked)) {
-            new AlertDialog.Builder(activity).setTitle(dialogTitle)
+            permissionHandler.onDenied(this, deniedPermissions);
+            finish();
+        } else if (!permissionHandler.onSetNotToAskAgain(this, permissionsWhichCantBeAsked)) {
+            final Permissions activity = this;
+            new AlertDialog.Builder(this).setTitle(dialogTitle)
                     .setMessage(forceDeniedDialogMessage)
                     .setPositiveButton(settingsText, new DialogInterface.OnClickListener() {
                         @Override
@@ -195,20 +219,59 @@ public class Permissions {
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                                     Uri.fromParts("package", activity.getPackageName(), null));
-                            activity.startActivityForResult(intent, requestCodeForSettings);
-                            permissionHandler.onGoneToSettings(true, activity, deniedPermissions,
-                                    requestCodeForSettings);
+                            if (recheckPermissionsAfterSettings) {
+                                startActivityForResult(intent, RC_SETTINGS);
+                            } else {
+                                startActivity(intent);
+                                finish();
+                            }
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            permissionHandler.onGoneToSettings(false, activity, deniedPermissions, 0);
+                            permissionHandler.onDenied(activity, deniedPermissions);
+                            finish();
                         }
                     })
                     .setCancelable(false).create().show();
-        }
+        } else finish();
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RC_SETTINGS && permissionHandler != null) {
+            checkPermissionsAfterSettings(this, permissionHandler, permissions);
+        } else finish();
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private static void checkPermissionsAfterSettings(Activity activity, PermissionHandler permissionHandler,
+                                                      String[] permissions) {
+        boolean allPermissionProvided = true;
+        final List<String> deniedPermissions = new ArrayList<>();
+        for (String otherPermission : permissions) {
+            if (activity.checkSelfPermission(otherPermission) != PackageManager.PERMISSION_GRANTED) {
+                allPermissionProvided = false;
+                deniedPermissions.add(otherPermission);
+            }
+        }
+        if (allPermissionProvided) {
+            Log.d(TAG, "Permission(s) just granted from settings.");
+            permissionHandler.onJustGranted();
+        } else {
+            Log.d(TAG, "Permission(s) not provided from settings, asking again.");
+            requestPermissions(activity, deniedPermissions, permissionHandler);
+        }
+        activity.finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (cleanHandlerOnDestroy) {
+            permissionHandler = null;
+        }
+        super.onDestroy();
     }
 
 }
