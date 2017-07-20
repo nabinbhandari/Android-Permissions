@@ -5,19 +5,18 @@ Easily handle runtime permissions in android.
  * Short code.
  * Can check multiple permissions at once.
  * Handle "don't ask again" condition.
- * Open source.
- * Light weight.
- * Fully customizable.
+ * Light weight (10 KB).
+ * Open source and fully customizable.
 
 Dependency:
 -----------
 
 **Gradle (Jcenter)**
 ```
-compile 'com.nabinbhandari.android:permissions:2.0'
+compile 'com.nabinbhandari.android:permissions:2.1'
 ```
-    
-    
+
+
 **Maven**
 ```
 <dependency>
@@ -26,7 +25,7 @@ compile 'com.nabinbhandari.android:permissions:2.0'
   <version>2.0</version>
   <type>pom</type>
 </dependency>
-```    
+```
 
 Usage:
 ------
@@ -38,14 +37,6 @@ Permissions.runPermissionCheck(this, rationale, new PermissionHandler() {
         //do the task.
     }
 }, Manifest.permission.CALL_PHONE, Manifest.permission.READ_CONTACTS); //as many as you need.
-```
-
-```java
-@Override
-public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                       @NonNull int[] grantResults) {
-    Permissions.onRequestPermissionsResult(this, permissions, grantResults);
-}
 ```
 
  * You can also override other methods like onDenied, onSetNotToAskAgain, etc if you want to change the default behaviour.

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -45,7 +46,7 @@ public class Permissions extends Activity {
 
     /**
      * If a user has forcefully denied some permissions and has been sent to settings, and if
-     * permission should not be checked again, this flag should be set to false.
+     * permission should not be checked again after returning, this flag should be set to false.
      */
     public static boolean recheckPermissionsAfterSettings = true;
 
@@ -130,7 +131,6 @@ public class Permissions extends Activity {
         cleanHandlerOnDestroy = false;
         Permissions.permissionHandler = permissionHandler;
         Intent intent = new Intent(activity, Permissions.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(EXTRA_PERMISSIONS, permissions.toArray(new String[0]));
         activity.startActivity(intent);
     }
@@ -142,8 +142,9 @@ public class Permissions extends Activity {
             permissions = getIntent().getStringArrayExtra(EXTRA_PERMISSIONS);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permissions != null
                     && permissions.length > 0) {
+                getWindow().setStatusBarColor(0);
                 requestPermissions(permissions, RC_PERMISSION);
-                new android.os.Handler().postDelayed(new Runnable() {
+                new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         cleanHandlerOnDestroy = true;
