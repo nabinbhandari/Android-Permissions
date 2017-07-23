@@ -4,7 +4,7 @@
     <application>
 
         <activity
-            android:name=".Permissions"
+            android:name=".PermissionsActivity"
             android:theme="@style/TransparentTheme" />
 
     </application>

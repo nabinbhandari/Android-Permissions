@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/nabinbhandari/Android-Permissions'
     gitUrl = 'https://github.com/nabinbhandari/Android-Permissions.git'
 
-    libraryVersion = '2.1'
+    libraryVersion = '3.0'
 
     developerId = 'nabin'
     developerName = 'Nabin Bhandari'

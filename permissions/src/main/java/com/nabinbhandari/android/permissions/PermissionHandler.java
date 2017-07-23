@@ -1,10 +1,9 @@
 package com.nabinbhandari.android.permissions;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * The class for handling permission callbacks.
@@ -16,55 +15,74 @@ import java.util.List;
 @SuppressWarnings("WeakerAccess")
 public abstract class PermissionHandler {
 
-    private static final String TAG = "PermissionHandler";
-
     /**
-     * This method will be called if permission(s) are granted.
+     * This method will be called if all of the requested permissions are granted.
      */
     public abstract void onGranted();
 
     /**
-     * This method will be called if permission(s) have just been granted.
-     */
-    public void onJustGranted() {
-        Log.d(TAG, "Permission(s) just granted.");
-        onGranted();
-    }
-
-    /**
      * This method will be called if some of the requested permissions have been denied.
      *
-     * @param context           The context for showing the default toast.
-     * @param deniedPermissions the list of permissions which have not been allowed yet.
+     * @param context           The android context.
+     * @param deniedPermissions The list of permissions which have been denied.
      */
-    public void onDenied(Context context, List<String> deniedPermissions) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Denied:");
-        for (String permission : deniedPermissions) {
-            builder.append(" ");
-            builder.append(permission);
+    public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+        if (Permissions.showLogs) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("Denied:");
+            for (String permission : deniedPermissions) {
+                builder.append(" ");
+                builder.append(permission);
+            }
+            Permissions.log(builder.toString());
         }
-        Log.d(TAG, builder.toString());
         Toast.makeText(context, "Permission Denied.", Toast.LENGTH_SHORT).show();
     }
 
     /**
-     * This method will be called if some permissions have been set not to ask again.
+     * This method will be called if some permissions have previously been set not to ask again.
      *
-     * @param context                     the android context.
-     * @param permissionsWhichCantBeAsked the list of permissions which have been set not to ask again.
+     * @param context     the android context.
+     * @param blockedList the list of permissions which have been set not to ask again.
      * @return The overrider of this method should return true if no further action is needed,
      * and should return false if the default action is to be taken, i.e. send user to settings.
+     * <br><br>
+     * Note: If the flag {@link Permissions#sendSetNotToAskAgainToSettings} has been set to false,
+     * the user won't be sent to settings by default.
      */
-    public boolean onSetNotToAskAgain(Context context, List<String> permissionsWhichCantBeAsked) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Set not to ask again:");
-        for (String permission : permissionsWhichCantBeAsked) {
-            builder.append(" ");
-            builder.append(permission);
+    @SuppressWarnings("UnusedParameters")
+    public boolean onBlocked(Context context, ArrayList<String> blockedList) {
+        if (Permissions.showLogs) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("Set not to ask again:");
+            for (String permission : blockedList) {
+                builder.append(" ");
+                builder.append(permission);
+            }
+            Permissions.log(builder.toString());
         }
-        Log.d(TAG, builder.toString());
         return false;
+    }
+
+    /**
+     * This method will be called if some permissions have just been set not to ask again.
+     *
+     * @param context           The android context.
+     * @param justBlockedList   The list of permissions which have just been set not to ask again.
+     * @param deniedPermissions The list of currently unavailable permissions.
+     */
+    public void onJustBlocked(Context context, ArrayList<String> justBlockedList,
+                              ArrayList<String> deniedPermissions) {
+        if (Permissions.showLogs) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("Just set not to ask again:");
+            for (String permission : justBlockedList) {
+                builder.append(" ");
+                builder.append(permission);
+            }
+            Permissions.log(builder.toString());
+        }
+        onDenied(context, deniedPermissions);
     }
 
 }

@@ -5,7 +5,7 @@ Easily handle runtime permissions in android.
  * Short code.
  * Can check multiple permissions at once.
  * Handle "don't ask again" condition.
- * Light weight (10 KB).
+ * Light weight (11 KB).
  * Open source and fully customizable.
 
 Dependency:
@@ -13,7 +13,7 @@ Dependency:
 
 **Gradle (Jcenter)**
 ```
-compile 'com.nabinbhandari.android:permissions:2.1'
+compile 'com.nabinbhandari.android:permissions:3.0'
 ```
 
 
@@ -22,7 +22,7 @@ compile 'com.nabinbhandari.android:permissions:2.1'
 <dependency>
   <groupId>com.nabinbhandari.android</groupId>
   <artifactId>permissions</artifactId>
-  <version>2.0</version>
+  <version>3.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -39,9 +39,9 @@ Permissions.runPermissionCheck(this, rationale, new PermissionHandler() {
 }, Manifest.permission.CALL_PHONE, Manifest.permission.READ_CONTACTS); //as many as you need.
 ```
 
- * You can also override other methods like onDenied, onSetNotToAskAgain, etc if you want to change the default behaviour.
+ * You can also override other methods like onDenied, onJustBlocked, etc if you want to change the default behaviour.
  * Dialog messages and texts can be modified by changing the values of public variables in the 'Permissions' class.
- 
+ * See documentation in the source code for more customizations.
 
 ## LICENSE
 
