@@ -27,11 +27,13 @@ public class PermissionsActivity extends Activity {
 
     static final String EXTRA_PERMISSIONS = "permissions";
     static final String EXTRA_RATIONALE = "rationale";
+    static final String EXTRA_OPTIONS = "options";
 
     static PermissionHandler permissionHandler;
 
     private boolean cleanHandlerOnDestroy = true;
     private ArrayList<String> allPermissions, deniedPermissions, noRationaleList;
+    private Permissions.Options options;
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
@@ -45,6 +47,10 @@ public class PermissionsActivity extends Activity {
 
         getWindow().setStatusBarColor(0);
         allPermissions = (ArrayList<String>) intent.getSerializableExtra(EXTRA_PERMISSIONS);
+        options = (Permissions.Options) intent.getSerializableExtra(EXTRA_OPTIONS);
+        if (options == null) {
+            options = new Permissions.Options();
+        }
         deniedPermissions = new ArrayList<>();
         noRationaleList = new ArrayList<>();
 
@@ -81,7 +87,7 @@ public class PermissionsActivity extends Activity {
                 }
             }
         };
-        new AlertDialog.Builder(this).setTitle(Permissions.dialogTitle)
+        new AlertDialog.Builder(this).setTitle(options.rationaleDialogTitle)
                 .setMessage(rationale)
                 .setPositiveButton(android.R.string.ok, listener)
                 .setNegativeButton(android.R.string.cancel, listener)
@@ -142,14 +148,14 @@ public class PermissionsActivity extends Activity {
     }
 
     private void sendToSettings() {
-        if (!Permissions.sendSetNotToAskAgainToSettings) {
+        if (!options.sendBlockedToSettings) {
             deny();
             return;
         }
         Permissions.log("Ask to go to settings.");
-        new AlertDialog.Builder(this).setTitle(Permissions.dialogTitle)
-                .setMessage(Permissions.forceDeniedDialogMessage)
-                .setPositiveButton(Permissions.settingsText, new DialogInterface.OnClickListener() {
+        new AlertDialog.Builder(this).setTitle(options.settingsDialogTitle)
+                .setMessage(options.settingsDialogMessage)
+                .setPositiveButton(options.settingsText, new DialogInterface.OnClickListener() {
                     @Override
                     @SuppressWarnings("InlinedAPI")
                     public void onClick(DialogInterface dialog, int which) {
@@ -175,15 +181,8 @@ public class PermissionsActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_SETTINGS && permissionHandler != null) {
-            String first = allPermissions.get(0);
-            if (allPermissions.size() == 0) {
-                Permissions.runPermissionCheck(this, null, permissionHandler, first);
-            } else {
-                ArrayList<String> all = new ArrayList<>(allPermissions);
-                all.remove(0);
-                Permissions.runPermissionCheck(this, null, permissionHandler, first,
-                        all.toArray(new String[0]));
-            }
+            Permissions.check(this, allPermissions.toArray(new String[0]), null, options,
+                    permissionHandler);
             cleanHandlerOnDestroy = false;
         }
         finish();

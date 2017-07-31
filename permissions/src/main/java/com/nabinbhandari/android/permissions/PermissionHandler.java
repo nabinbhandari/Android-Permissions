@@ -27,7 +27,7 @@ public abstract class PermissionHandler {
      * @param deniedPermissions The list of permissions which have been denied.
      */
     public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-        if (Permissions.showLogs) {
+        if (Permissions.loggingEnabled) {
             StringBuilder builder = new StringBuilder();
             builder.append("Denied:");
             for (String permission : deniedPermissions) {
@@ -47,12 +47,12 @@ public abstract class PermissionHandler {
      * @return The overrider of this method should return true if no further action is needed,
      * and should return false if the default action is to be taken, i.e. send user to settings.
      * <br><br>
-     * Note: If the flag {@link Permissions#sendSetNotToAskAgainToSettings} has been set to false,
-     * the user won't be sent to settings by default.
+     * Note: If the option {@link Permissions.Options#sendDontAskAgainToSettings(boolean)} has been
+     * set to false, the user won't be sent to settings by default.
      */
     @SuppressWarnings("UnusedParameters")
     public boolean onBlocked(Context context, ArrayList<String> blockedList) {
-        if (Permissions.showLogs) {
+        if (Permissions.loggingEnabled) {
             StringBuilder builder = new StringBuilder();
             builder.append("Set not to ask again:");
             for (String permission : blockedList) {
@@ -73,7 +73,7 @@ public abstract class PermissionHandler {
      */
     public void onJustBlocked(Context context, ArrayList<String> justBlockedList,
                               ArrayList<String> deniedPermissions) {
-        if (Permissions.showLogs) {
+        if (Permissions.loggingEnabled) {
             StringBuilder builder = new StringBuilder();
             builder.append("Just set not to ask again:");
             for (String permission : justBlockedList) {

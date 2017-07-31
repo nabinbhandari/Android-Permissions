@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
     }
 
     public void requestPhone(View view) {
-        Permissions.runPermissionCheck(this, "Phone permission is required because...",
+        Permissions.check(this, Manifest.permission.CALL_PHONE,
                 new PermissionHandler() {
                     @Override
                     public void onGranted() {
@@ -49,11 +49,14 @@ public class MainActivity extends Activity {
                         Toast.makeText(context, "Phone just blocked.",
                                 Toast.LENGTH_SHORT).show();
                     }
-                }, Manifest.permission.CALL_PHONE);
+                });
     }
 
     public void requestCamera(View view) {
-        Permissions.runPermissionCheck(this, "Camera and storage permissions are required because...",
+        Permissions.check(this, new String[]{Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                "Camera and storage permissions are required because...", new Permissions.Options()
+                        .setRationaleDialogTitle("Custom rationale title."),
                 new PermissionHandler() {
                     @Override
                     public void onGranted() {
@@ -79,7 +82,7 @@ public class MainActivity extends Activity {
                         Toast.makeText(context, "Camera+Storage just blocked:\n" + Arrays.toString(deniedPermissions.toArray()),
                                 Toast.LENGTH_SHORT).show();
                     }
-                }, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                });
     }
 
     public void openSettings(View view) {
