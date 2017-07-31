@@ -15,5 +15,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':permissions')
+
+    //compile project(':permissions')
+    compile 'com.nabinbhandari.android:permissions:3.5'
 }

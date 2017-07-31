@@ -25,38 +25,20 @@ public class MainActivity extends Activity {
     }
 
     public void requestPhone(View view) {
-        Permissions.check(this, Manifest.permission.CALL_PHONE,
+        Permissions.check(this, Manifest.permission.CALL_PHONE, null,
                 new PermissionHandler() {
                     @Override
                     public void onGranted() {
                         Toast.makeText(MainActivity.this, "Phone granted.", Toast.LENGTH_SHORT).show();
                     }
-
-                    @Override
-                    public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                        Toast.makeText(context, "Phone denied.", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public boolean onBlocked(Context context, ArrayList<String> blockedList) {
-                        Toast.makeText(context, "Phone blocked.", Toast.LENGTH_SHORT).show();
-                        return false;
-                    }
-
-                    @Override
-                    public void onJustBlocked(Context context, ArrayList<String> justBlockedList,
-                                              ArrayList<String> deniedPermissions) {
-                        Toast.makeText(context, "Phone just blocked.",
-                                Toast.LENGTH_SHORT).show();
-                    }
                 });
     }
 
-    public void requestCamera(View view) {
+    public void requestCameraAndStorage(View view) {
         Permissions.check(this, new String[]{Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 "Camera and storage permissions are required because...", new Permissions.Options()
-                        .setRationaleDialogTitle("Custom rationale title."),
+                        .setRationaleDialogTitle("Info"),
                 new PermissionHandler() {
                     @Override
                     public void onGranted() {

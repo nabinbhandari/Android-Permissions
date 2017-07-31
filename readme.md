@@ -5,7 +5,7 @@ Easily handle runtime permissions in android.
  * Short code.
  * Can check multiple permissions at once.
  * Handle "don't ask again" condition.
- * Light weight (11 KB).
+ * Light weight (12 KB).
  * Open source and fully customizable.
 
 Dependency:
@@ -13,7 +13,7 @@ Dependency:
 
 **Gradle (Jcenter)**
 ```
-compile 'com.nabinbhandari.android:permissions:3.0'
+compile 'com.nabinbhandari.android:permissions:3.5'
 ```
 
 
@@ -22,7 +22,7 @@ compile 'com.nabinbhandari.android:permissions:3.0'
 <dependency>
   <groupId>com.nabinbhandari.android</groupId>
   <artifactId>permissions</artifactId>
-  <version>3.0</version>
+  <version>3.5</version>
   <type>pom</type>
 </dependency>
 ```
@@ -30,17 +30,34 @@ compile 'com.nabinbhandari.android:permissions:3.0'
 Usage:
 ------
 
+**Single permission:**
 ```java
-Permissions.runPermissionCheck(this, rationale, new PermissionHandler() {
-    @Override
-    public void onGranted() {
-        //do the task.
-    }
-}, Manifest.permission.CALL_PHONE, Manifest.permission.READ_CONTACTS); //as many as you need.
+Permissions.check(this, Manifest.permission.CALL_PHONE, null,
+        new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                //do your task.
+            }
+        });
+
+````
+
+**Multiple permissions:**
+```java
+Permissions.check(this, new String[]{Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE},
+        "Camera and storage permissions are required because...", new Permissions.Options()
+                .setSettingsDialogTitle("Warning!").setRationaleDialogTitle("Info"),
+        new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                //do your task
+            }
+        });
 ```
 
  * You can also override other methods like onDenied, onJustBlocked, etc if you want to change the default behaviour.
- * Dialog messages and texts can be modified by changing the values of public variables in the 'Permissions' class.
+ * Dialog messages and texts can be modified by building the options parameter.
  * See documentation in the source code for more customizations.
 
 ## LICENSE

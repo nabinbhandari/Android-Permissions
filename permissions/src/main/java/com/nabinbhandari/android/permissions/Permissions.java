@@ -1,6 +1,5 @@
 package com.nabinbhandari.android.permissions;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -35,60 +34,55 @@ public class Permissions {
         if (loggingEnabled) Log.d("Permissions", message);
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    private static void proceed(Context context, ArrayList<String> permissions, String rationale,
-                                Options options, PermissionHandler handler) {
-        boolean allPermissionProvided = true;
-        for (String aPermission : permissions) {
-            if (context.checkSelfPermission(aPermission) != PackageManager.PERMISSION_GRANTED) {
-                allPermissionProvided = false;
-                break;
-            }
-        }
-
-        if (allPermissionProvided) {
-            handler.onGranted();
-            log("Permission(s) " + (PermissionsActivity.permissionHandler == null ?
-                    "already granted." : "just granted from settings."));
-            PermissionsActivity.permissionHandler = null;
-        } else {
-            PermissionsActivity.permissionHandler = handler;
-            Intent intent = new Intent(context, PermissionsActivity.class);
-            intent.putExtra(PermissionsActivity.EXTRA_PERMISSIONS, permissions);
-            intent.putExtra(PermissionsActivity.EXTRA_RATIONALE, rationale);
-            intent.putExtra(PermissionsActivity.EXTRA_OPTIONS, options);
-            context.startActivity(intent);
-        }
+    /**
+     * Check/Request a permission and call the callback methods of permission handler accordingly.
+     *
+     * @param context    the android context.
+     * @param permission the permission to be requested.
+     * @param rationale  Explanation to be shown to user if s/he has denied permission earlier.
+     *                   If this parameter is null, permissions will be requested without showing
+     *                   the rationale dialog.
+     * @param handler    The permission handler object for handling callbacks of various user
+     *                   actions such as permission granted, permission denied, etc.
+     */
+    public static void check(Context context, String permission, String rationale,
+                             PermissionHandler handler) {
+        check(context, new String[]{permission}, rationale, null, handler);
     }
 
     /**
-     * Check/Request permissions and calls the callback methods of permission handler accordingly.
+     * Check/Request a permission and call the callback methods of permission handler accordingly.
      *
-     * @param context           Android context.
-     * @param rationale         Explanation to be shown to user if s/he has denied permission
-     *                          earlier. If this parameter is null, permissions will be requested
-     *                          without showing the rationale dialog.
-     * @param permissionHandler The permission handler object for handling callbacks of various
-     *                          user actions such as permission granted, permission denied, etc.
-     * @param permission        The permission to request.
-     * @param otherPermissions  (Optional) Other permissions if multiple permissions are to be
-     *                          requested at once.
-     * @deprecated Use {@link #check} instead.
+     * @param context     the android context.
+     * @param permission  the permission to be requested.
+     * @param rationaleId The string resource id of the explanation to be shown to user if s/he has
+     *                    denied permission earlier. If resource is not found, permissions will be
+     *                    requested without showing the rationale dialog.
+     * @param handler     The permission handler object for handling callbacks of various user
+     *                    actions such as permission granted, permission denied, etc.
      */
-    public static void runPermissionCheck(final Context context, String rationale,
-                                          final PermissionHandler permissionHandler,
-                                          String permission, String... otherPermissions) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            permissionHandler.onGranted();
-            log("Android version < 23");
-        } else {
-            ArrayList<String> permissions = new ArrayList<>();
-            permissions.add(permission);
-            Collections.addAll(permissions, otherPermissions);
-            proceed(context, permissions, rationale, null, permissionHandler);
+    public static void check(Context context, String permission, int rationaleId,
+                             PermissionHandler handler) {
+        String rationale = null;
+        try {
+            rationale = context.getString(rationaleId);
+        } catch (Exception ignored) {
         }
+        check(context, new String[]{permission}, rationale, null, handler);
     }
 
+    /**
+     * Check/Request permissions and call the callback methods of permission handler accordingly.
+     *
+     * @param context     Android context.
+     * @param permissions The array of one or more permission(s) to request.
+     * @param rationale   Explanation to be shown to user if s/he has denied permission earlier.
+     *                    If this parameter is null, permissions will be requested without showing
+     *                    the rationale dialog.
+     * @param options     The options for handling permissions.
+     * @param handler     The permission handler object for handling callbacks of various user
+     *                    actions such as permission granted, permission denied, etc.
+     */
     public static void check(final Context context, String[] permissions, String rationale,
                              Options options, final PermissionHandler handler) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -97,21 +91,50 @@ public class Permissions {
         } else {
             ArrayList<String> permissionsList = new ArrayList<>();
             Collections.addAll(permissionsList, permissions);
-            proceed(context, permissionsList, rationale, options, handler);
+            boolean allPermissionProvided = true;
+            for (String aPermission : permissionsList) {
+                if (context.checkSelfPermission(aPermission) != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionProvided = false;
+                    break;
+                }
+            }
+
+            if (allPermissionProvided) {
+                handler.onGranted();
+                log("Permission(s) " + (PermissionsActivity.permissionHandler == null ?
+                        "already granted." : "just granted from settings."));
+                PermissionsActivity.permissionHandler = null;
+            } else {
+                PermissionsActivity.permissionHandler = handler;
+                Intent intent = new Intent(context, PermissionsActivity.class);
+                intent.putExtra(PermissionsActivity.EXTRA_PERMISSIONS, permissionsList);
+                intent.putExtra(PermissionsActivity.EXTRA_RATIONALE, rationale);
+                intent.putExtra(PermissionsActivity.EXTRA_OPTIONS, options);
+                context.startActivity(intent);
+            }
         }
     }
 
-    public static void check(Context context, String permission, PermissionHandler handler) {
-        check(context, new String[]{permission}, null, null, handler);
-    }
-
-    public static void check(Context context, String permission, String rationale,
-                             PermissionHandler handler) {
-        check(context, new String[]{permission}, rationale, null, handler);
-    }
-
-    public static void check(Context context, String[] permissions, PermissionHandler handler) {
-        check(context, permissions, null, null, handler);
+    /**
+     * Check/Request permissions and call the callback methods of permission handler accordingly.
+     *
+     * @param context     Android context.
+     * @param permissions The array of one or more permission(s) to request.
+     * @param rationaleId The string resource id of the explanation to be shown to user if s/he has
+     *                    denied permission earlier. If resource is not found, permissions will be
+     *                    requested without showing the rationale dialog.
+     * @param options     The options for handling permissions.
+     * @param handler     The permission handler object for handling callbacks of various user
+     *                    actions such as permission granted, permission denied, etc.
+     */
+    public static void check(final Context context, String[] permissions, int rationaleId,
+                             Options options, final PermissionHandler handler) {
+        String rationale = null;
+        try {
+            rationale = context.getString(rationaleId);
+        } catch (Exception ignored) {
+        }
+        check(context, permissions, rationale, options, handler);
     }
 
     /**
@@ -128,6 +151,7 @@ public class Permissions {
         /**
          * Sets the button text for "settings" while asking user to go to settings.
          *
+         * @param settingsText The text for "settings".
          * @return same instance.
          */
         public Options setSettingsText(String settingsText) {
@@ -138,6 +162,7 @@ public class Permissions {
         /**
          * Sets the title text for permission rationale dialog.
          *
+         * @param rationaleDialogTitle the title text.
          * @return same instance.
          */
         public Options setRationaleDialogTitle(String rationaleDialogTitle) {
@@ -149,6 +174,7 @@ public class Permissions {
          * Sets the title text of the dialog which asks user to go to settings, in the case when
          * permission(s) have been set not to ask again.
          *
+         * @param settingsDialogTitle the title text.
          * @return same instance.
          */
         public Options setSettingsDialogTitle(String settingsDialogTitle) {
@@ -160,6 +186,7 @@ public class Permissions {
          * Sets the message of the dialog which asks user to go to settings, in the case when
          * permission(s) have been set not to ask again.
          *
+         * @param settingsDialogMessage the dialog message.
          * @return same instance.
          */
         public Options setSettingsDialogMessage(String settingsDialogMessage) {
@@ -171,8 +198,9 @@ public class Permissions {
          * In the case the user has previously set some permissions not to ask again, if this flag
          * is true the user will be prompted to go to settings and provide the permissions otherwise
          * the method {@link PermissionHandler#onDenied(Context, ArrayList)} will be invoked
-         * directly.
+         * directly. The default state is true.
          *
+         * @param send whether to ask user to go to settings or not.
          * @return same instance.
          */
         public Options sendDontAskAgainToSettings(boolean send) {

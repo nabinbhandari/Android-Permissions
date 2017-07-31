@@ -14,7 +14,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="requestCamera"
+        android:onClick="requestCameraAndStorage"
         android:text="@string/camera_and_storage" />
 
     <Button
