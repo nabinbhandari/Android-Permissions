@@ -9,6 +9,8 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <pre>
@@ -89,10 +91,10 @@ public class Permissions {
             handler.onGranted();
             log("Android version < 23");
         } else {
-            ArrayList<String> permissionsList = new ArrayList<>();
-            Collections.addAll(permissionsList, permissions);
+            Set<String> permissionsSet = new HashSet<>();
+            Collections.addAll(permissionsSet, permissions);
             boolean allPermissionProvided = true;
-            for (String aPermission : permissionsList) {
+            for (String aPermission : permissionsSet) {
                 if (context.checkSelfPermission(aPermission) != PackageManager.PERMISSION_GRANTED) {
                     allPermissionProvided = false;
                     break;
@@ -104,12 +106,15 @@ public class Permissions {
                 log("Permission(s) " + (PermissionsActivity.permissionHandler == null ?
                         "already granted." : "just granted from settings."));
                 PermissionsActivity.permissionHandler = null;
+
             } else {
                 PermissionsActivity.permissionHandler = handler;
-                Intent intent = new Intent(context, PermissionsActivity.class);
-                intent.putExtra(PermissionsActivity.EXTRA_PERMISSIONS, permissionsList);
-                intent.putExtra(PermissionsActivity.EXTRA_RATIONALE, rationale);
-                intent.putExtra(PermissionsActivity.EXTRA_OPTIONS, options);
+                ArrayList<String> permissionsList = new ArrayList<>(permissionsSet);
+
+                Intent intent = new Intent(context, PermissionsActivity.class)
+                        .putExtra(PermissionsActivity.EXTRA_PERMISSIONS, permissionsList)
+                        .putExtra(PermissionsActivity.EXTRA_RATIONALE, rationale)
+                        .putExtra(PermissionsActivity.EXTRA_OPTIONS, options);
                 context.startActivity(intent);
             }
         }

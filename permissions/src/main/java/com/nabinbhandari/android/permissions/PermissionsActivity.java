@@ -66,10 +66,15 @@ public class PermissionsActivity extends Activity {
             }
         }
 
+        if (deniedPermissions.isEmpty()) {
+            grant();
+            return;
+        }
+
         String rationale = intent.getStringExtra(EXTRA_RATIONALE);
         if (noRationale || TextUtils.isEmpty(rationale)) {
             Permissions.log("No rationale.");
-            requestPermissions(deniedPermissions.toArray(new String[0]), RC_PERMISSION);
+            requestPermissions(toArray(deniedPermissions), RC_PERMISSION);
         } else {
             Permissions.log("Show rationale.");
             showRationale(rationale);
@@ -81,7 +86,7 @@ public class PermissionsActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == DialogInterface.BUTTON_POSITIVE) {
-                    requestPermissions(deniedPermissions.toArray(new String[0]), RC_PERMISSION);
+                    requestPermissions(toArray(deniedPermissions), RC_PERMISSION);
                 } else {
                     deny();
                 }
@@ -132,15 +137,19 @@ public class PermissionsActivity extends Activity {
 
                 if (justBlockedList.size() > 0) { //checked don't ask again for at least one.
                     if (permissionHandler != null) {
-                        permissionHandler.onJustBlocked(this, justBlockedList, deniedPermissions);
+                        permissionHandler.onJustBlocked(getApplicationContext(), justBlockedList,
+                                deniedPermissions);
                     }
                     finish();
+
                 } else if (justDeniedList.size() > 0) { //clicked deny for at least one.
                     deny();
+
                 } else { //unavailable permissions were already set not to ask again.
-                    if (permissionHandler != null && !permissionHandler.onBlocked(this,
-                            blockedList)) {
+                    if (permissionHandler != null &&
+                            !permissionHandler.onBlocked(getApplicationContext(), blockedList)) {
                         sendToSettings();
+
                     } else finish();
                 }
             }
@@ -181,11 +190,20 @@ public class PermissionsActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_SETTINGS && permissionHandler != null) {
-            Permissions.check(this, allPermissions.toArray(new String[0]), null, options,
+            Permissions.check(this, toArray(allPermissions), null, options,
                     permissionHandler);
             cleanHandlerOnDestroy = false;
         }
         finish();
+    }
+
+    private String[] toArray(ArrayList<String> arrayList) {
+        int size = arrayList.size();
+        String[] array = new String[size];
+        for (int i = 0; i < size; i++) {
+            array[i] = arrayList.get(i);
+        }
+        return array;
     }
 
     @Override
@@ -198,7 +216,7 @@ public class PermissionsActivity extends Activity {
 
     private void deny() {
         if (permissionHandler != null) {
-            permissionHandler.onDenied(this, deniedPermissions);
+            permissionHandler.onDenied(getApplicationContext(), deniedPermissions);
         }
         finish();
     }

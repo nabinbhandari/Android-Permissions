@@ -23,7 +23,7 @@ public abstract class PermissionHandler {
     /**
      * This method will be called if some of the requested permissions have been denied.
      *
-     * @param context           The android context.
+     * @param context           The application context.
      * @param deniedPermissions The list of permissions which have been denied.
      */
     public void onDenied(Context context, ArrayList<String> deniedPermissions) {
@@ -42,7 +42,7 @@ public abstract class PermissionHandler {
     /**
      * This method will be called if some permissions have previously been set not to ask again.
      *
-     * @param context     the android context.
+     * @param context     the application context.
      * @param blockedList the list of permissions which have been set not to ask again.
      * @return The overrider of this method should return true if no further action is needed,
      * and should return false if the default action is to be taken, i.e. send user to settings.
@@ -67,7 +67,7 @@ public abstract class PermissionHandler {
     /**
      * This method will be called if some permissions have just been set not to ask again.
      *
-     * @param context           The android context.
+     * @param context           The application context.
      * @param justBlockedList   The list of permissions which have just been set not to ask again.
      * @param deniedPermissions The list of currently unavailable permissions.
      */

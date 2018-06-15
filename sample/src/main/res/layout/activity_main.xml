@@ -8,18 +8,21 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="200dp"
         android:onClick="requestPhone"
         android:text="@string/phone" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="200dp"
         android:onClick="requestCameraAndStorage"
         android:text="@string/camera_and_storage" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="200dp"
         android:onClick="openSettings"
         android:text="@string/app_settings" />
 
