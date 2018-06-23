@@ -40,5 +40,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+// Uncomment following two lines only during publishing.
+// apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+// apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'

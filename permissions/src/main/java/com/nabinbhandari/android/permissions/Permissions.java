@@ -9,7 +9,7 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -91,7 +91,7 @@ public class Permissions {
             handler.onGranted();
             log("Android version < 23");
         } else {
-            Set<String> permissionsSet = new HashSet<>();
+            Set<String> permissionsSet = new LinkedHashSet<>();
             Collections.addAll(permissionsSet, permissions);
             boolean allPermissionProvided = true;
             for (String aPermission : permissionsSet) {

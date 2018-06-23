@@ -13,19 +13,9 @@ Dependency:
 
 **Gradle (Jcenter)**
 ```
-compile 'com.nabinbhandari.android:permissions:3.5'
+implementation 'com.nabinbhandari.android:permissions:3.6'
 ```
 
-
-**Maven**
-```
-<dependency>
-  <groupId>com.nabinbhandari.android</groupId>
-  <artifactId>permissions</artifactId>
-  <version>3.5</version>
-  <type>pom</type>
-</dependency>
-```
 
 Usage:
 ------
@@ -62,7 +52,7 @@ Permissions.check(this, new String[]{Manifest.permission.CAMERA,
 
 ## LICENSE
 
-    Copyright 2017 Nabin Bhandari
+    Copyright 2018 Nabin Bhandari
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
