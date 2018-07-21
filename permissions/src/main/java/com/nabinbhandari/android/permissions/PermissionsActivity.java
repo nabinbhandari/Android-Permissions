@@ -31,7 +31,6 @@ public class PermissionsActivity extends Activity {
 
     static PermissionHandler permissionHandler;
 
-    private boolean cleanHandlerOnDestroy = true;
     private ArrayList<String> allPermissions, deniedPermissions, noRationaleList;
     private Permissions.Options options;
 
@@ -39,6 +38,7 @@ public class PermissionsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setFinishOnTouchOutside(false);
         Intent intent = getIntent();
         if (intent == null || !intent.hasExtra(EXTRA_PERMISSIONS)) {
             finish();
@@ -136,11 +136,12 @@ public class PermissionsActivity extends Activity {
                 }
 
                 if (justBlockedList.size() > 0) { //checked don't ask again for at least one.
+                    PermissionHandler permissionHandler = PermissionsActivity.permissionHandler;
+                    finish();
                     if (permissionHandler != null) {
                         permissionHandler.onJustBlocked(getApplicationContext(), justBlockedList,
                                 deniedPermissions);
                     }
-                    finish();
 
                 } else if (justDeniedList.size() > 0) { //clicked deny for at least one.
                     deny();
@@ -192,9 +193,9 @@ public class PermissionsActivity extends Activity {
         if (requestCode == RC_SETTINGS && permissionHandler != null) {
             Permissions.check(this, toArray(allPermissions), null, options,
                     permissionHandler);
-            cleanHandlerOnDestroy = false;
         }
-        finish();
+        // super, because overridden method will make the handler null, and we don't want that.
+        super.finish();
     }
 
     private String[] toArray(ArrayList<String> arrayList) {
@@ -207,25 +208,25 @@ public class PermissionsActivity extends Activity {
     }
 
     @Override
-    protected void onDestroy() {
-        if (cleanHandlerOnDestroy) {
-            permissionHandler = null;
-        }
-        super.onDestroy();
+    public void finish() {
+        permissionHandler = null;
+        super.finish();
     }
 
     private void deny() {
+        PermissionHandler permissionHandler = PermissionsActivity.permissionHandler;
+        finish();
         if (permissionHandler != null) {
             permissionHandler.onDenied(getApplicationContext(), deniedPermissions);
         }
-        finish();
     }
 
     private void grant() {
+        PermissionHandler permissionHandler = PermissionsActivity.permissionHandler;
+        finish();
         if (permissionHandler != null) {
             permissionHandler.onGranted();
         }
-        finish();
     }
 
 }
