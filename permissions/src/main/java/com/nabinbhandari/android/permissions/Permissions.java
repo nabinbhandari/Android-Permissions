@@ -115,6 +115,8 @@ public class Permissions {
                         .putExtra(PermissionsActivity.EXTRA_PERMISSIONS, permissionsList)
                         .putExtra(PermissionsActivity.EXTRA_RATIONALE, rationale)
                         .putExtra(PermissionsActivity.EXTRA_OPTIONS, options);
+                        //Flag needed for Android 7 otherwise it crashes when context is fragment
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         }
