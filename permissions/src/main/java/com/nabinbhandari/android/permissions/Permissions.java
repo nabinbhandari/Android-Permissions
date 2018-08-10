@@ -52,8 +52,7 @@ public class Permissions {
         check(context, new String[]{permission}, rationale, null, handler);
     }
 
-    /**
-     * Check/Request a permission and call the callback methods of permission handler accordingly.
+    /**     * Check/Request a permission and call the callback methods of permission handler accordingly.
      *
      * @param context     the android context.
      * @param permission  the permission to be requested.
@@ -115,6 +114,9 @@ public class Permissions {
                         .putExtra(PermissionsActivity.EXTRA_PERMISSIONS, permissionsList)
                         .putExtra(PermissionsActivity.EXTRA_RATIONALE, rationale)
                         .putExtra(PermissionsActivity.EXTRA_OPTIONS, options);
+                        //Flag needed for Android 6.0 otherwise it crashes when context is typeof application 
+                        //(activity is started out of activity context)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         }
