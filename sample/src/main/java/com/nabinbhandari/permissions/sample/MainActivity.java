@@ -14,7 +14,6 @@ import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainActivity extends Activity {
 
@@ -25,46 +24,42 @@ public class MainActivity extends Activity {
     }
 
     public void requestPhone(View view) {
-        Permissions.check(this, Manifest.permission.CALL_PHONE, null,
-                new PermissionHandler() {
-                    @Override
-                    public void onGranted() {
-                        Toast.makeText(MainActivity.this, "Phone granted.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        Permissions.check(this, Manifest.permission.CALL_PHONE, null, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                Toast.makeText(MainActivity.this, "Phone granted.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void requestCameraAndStorage(View view) {
-        Permissions.check(this, new String[]{Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                "Camera and storage permissions are required because...", new Permissions.Options()
-                        .setRationaleDialogTitle("Info"),
-                new PermissionHandler() {
-                    @Override
-                    public void onGranted() {
-                        Toast.makeText(MainActivity.this, "Camera+Storage granted.", Toast.LENGTH_SHORT).show();
-                    }
+        String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        Permissions.check(this, permissions, null, null, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                Toast.makeText(MainActivity.this, "Camera+Storage granted.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-                    @Override
-                    public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                        Toast.makeText(context, "Camera+Storage Denied:\n" + Arrays.toString(deniedPermissions.toArray()),
-                                Toast.LENGTH_SHORT).show();
-                    }
+    public void requestLocation(View view) {
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+        String rationale = "Please provide location permission so that you can ...";
+        Permissions.Options options = new Permissions.Options()
+                .setRationaleDialogTitle("Info")
+                .setSettingsDialogTitle("Warning");
 
-                    @Override
-                    public boolean onBlocked(Context context, ArrayList<String> blockedList) {
-                        Toast.makeText(context, "Camera+Storage blocked:\n" + Arrays.toString(blockedList.toArray()),
-                                Toast.LENGTH_SHORT).show();
-                        return false;
-                    }
+        Permissions.check(this, permissions, rationale, options, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                Toast.makeText(MainActivity.this, "Location granted.", Toast.LENGTH_SHORT).show();
+            }
 
-                    @Override
-                    public void onJustBlocked(Context context, ArrayList<String> justBlockedList,
-                                              ArrayList<String> deniedPermissions) {
-                        Toast.makeText(context, "Camera+Storage just blocked:\n" + Arrays.toString(deniedPermissions.toArray()),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+            @Override
+            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                Toast.makeText(MainActivity.this, "Location denied.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void openSettings(View view) {

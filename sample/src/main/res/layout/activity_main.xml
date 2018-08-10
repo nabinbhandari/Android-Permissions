@@ -8,16 +8,26 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:minWidth="200dp"
         android:onClick="requestPhone"
-        android:text="@string/phone" />
+        android:text="@string/single" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:minWidth="200dp"
         android:onClick="requestCameraAndStorage"
-        android:text="@string/camera_and_storage" />
+        android:text="@string/multiple" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:minWidth="200dp"
+        android:onClick="requestLocation"
+        android:text="@string/customized" />
 
     <Button
         android:layout_width="wrap_content"

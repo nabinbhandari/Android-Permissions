@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Permissions Sample</string>
-    <string name="phone">Phone</string>
-    <string name="camera_and_storage"><![CDATA[Camera & Storage]]></string>
+    <string name="single">Single</string>
+    <string name="multiple">Multiple</string>
+    <string name="customized">Customized</string>
     <string name="app_settings">App Settings</string>
 </resources>
