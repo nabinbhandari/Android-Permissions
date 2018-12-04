@@ -74,6 +74,13 @@ Permissions.check(this/*context*/, permissions, rationale, options, new Permissi
  * You can also override other methods like onDenied, onJustBlocked, etc if you want to change the default behaviour.
  * Dialog messages and texts can be modified by building the options parameter.
  * See documentation in the source code for more customizations.
+ 
+---
+
+**If you find this library useful, please consider starring this repository.**  
+![Star Repo](https://i.imgur.com/oSLuE0e.png)
+
+---
 
 ## LICENSE
     Copyright 2018 Nabin Bhandari
