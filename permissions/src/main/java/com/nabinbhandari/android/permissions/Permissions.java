@@ -115,6 +115,9 @@ public class Permissions {
                         .putExtra(PermissionsActivity.EXTRA_PERMISSIONS, permissionsList)
                         .putExtra(PermissionsActivity.EXTRA_RATIONALE, rationale)
                         .putExtra(PermissionsActivity.EXTRA_OPTIONS, options);
+                if (options.createNewTask) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                }
                 context.startActivity(intent);
             }
         }
@@ -146,12 +149,14 @@ public class Permissions {
      * Options to customize while requesting permissions.
      */
     public static class Options implements Serializable {
+
         String settingsText = "Settings";
         String rationaleDialogTitle = "Permissions Required";
         String settingsDialogTitle = "Permissions Required";
         String settingsDialogMessage = "Required permission(s) have been set" +
                 " not to ask again! Please provide them from settings.";
         boolean sendBlockedToSettings = true;
+        boolean createNewTask = false;
 
         /**
          * Sets the button text for "settings" while asking user to go to settings.
@@ -161,6 +166,19 @@ public class Permissions {
          */
         public Options setSettingsText(String settingsText) {
             this.settingsText = settingsText;
+            return this;
+        }
+
+        /**
+         * Sets the "Create new Task" flag in Intent, for when we're
+         * calling this library from within a Service or other
+         * non-activity context.
+         *
+         * @param createNewTask true if we need the Intent.FLAG_ACTIVITY_NEW_TASK
+         * @return same instance.
+         */
+        public Options setCreateNewTask(boolean createNewTask) {
+            this.createNewTask = createNewTask;
             return this;
         }
 
