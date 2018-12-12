@@ -16,7 +16,7 @@ Dependency:
 
 **Gradle (Jcenter)**
 ```
-implementation 'com.nabinbhandari.android:permissions:3.7'
+implementation 'com.nabinbhandari.android:permissions:3.8'
 ```
 
 Usage:
@@ -77,8 +77,8 @@ Permissions.check(this/*context*/, permissions, rationale, options, new Permissi
  
 ---
 
-**If you find this library useful, please consider starring this repository.**  
-![Star Repo](https://i.imgur.com/oSLuE0e.png)
+**If you find this library useful, please consider starring this repository from the top of this page.**
+[![](https://i.imgur.com/oSLuE0e.png)](#)
 
 ---
 
