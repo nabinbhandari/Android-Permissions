@@ -22,6 +22,23 @@ implementation 'com.nabinbhandari.android:permissions:3.8'
 Usage:
 ------
 
+All call types shown below can be made directly from Activity as they are extensions as well.
+
+Example:
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+        
+    checkPermission(Manifest.permission.CALL_PHONE, null, object: PermissionHandler {
+        override fun onGranted() {
+            // do your task.
+        }
+    })
+}
+```
+
+
 First declare your permissions in the manifest.
 Example:
 
