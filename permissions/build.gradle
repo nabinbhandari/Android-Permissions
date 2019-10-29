@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 ext {
     bintrayRepo = 'android'
@@ -25,12 +27,12 @@ ext {
 }
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 29
 
     defaultConfig {
         //noinspection MinSdkTooLow
         minSdkVersion 1
-        targetSdkVersion 27
+        targetSdkVersion 29
         versionCode 3
         versionName "$libraryVersion"
     }
@@ -38,6 +40,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
 
 // Uncomment following two lines only during publishing.
