@@ -152,9 +152,12 @@ public class Permissions {
 
         String settingsText = "Settings";
         String rationaleDialogTitle = "Permissions Required";
+        String rationaleDialogNegativeButton = null;
+        String rationaleDialogPositiveButton = null;
         String settingsDialogTitle = "Permissions Required";
         String settingsDialogMessage = "Required permission(s) have been set" +
                 " not to ask again! Please provide them from settings.";
+        boolean rationaleDialogCancelable = true;
         boolean sendBlockedToSettings = true;
         boolean createNewTask = false;
 
@@ -194,6 +197,28 @@ public class Permissions {
         }
 
         /**
+         * Sets a custom text for the rationale dialog's negative button.
+         *
+         * @param rationaleDialogNegativeButton cancel button text.
+         * @return same instance.
+         */
+        public Options setRationaleDialogNegativeButton(String rationaleDialogNegativeButton) {
+            this.rationaleDialogNegativeButton = rationaleDialogNegativeButton;
+            return this;
+        }
+
+        /**
+         * Sets a custom text for the rationale dialog's positive button.
+         *
+         * @param rationaleDialogPositiveButton positive button text.
+         * @return same instance.
+         */
+        public Options setRationaleDialogPositiveButton(String rationaleDialogPositiveButton) {
+            this.rationaleDialogPositiveButton = rationaleDialogPositiveButton;
+            return this;
+        }
+
+        /**
          * Sets the title text of the dialog which asks user to go to settings, in the case when
          * permission(s) have been set not to ask again.
          *
@@ -228,6 +253,17 @@ public class Permissions {
          */
         public Options sendDontAskAgainToSettings(boolean send) {
             sendBlockedToSettings = send;
+            return this;
+        }
+
+        /**
+         * Sets whether or not the rationale dialog should be cancelable.
+         *
+         * @param cancelable if true, the rationale dialog will be cancelable.
+         * @return same instance.
+         */
+        public Options setRationaleDialogCancelable(boolean cancelable) {
+            rationaleDialogCancelable = cancelable;
             return this;
         }
     }

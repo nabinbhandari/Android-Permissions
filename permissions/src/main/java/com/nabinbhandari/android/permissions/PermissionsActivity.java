@@ -92,16 +92,26 @@ public class PermissionsActivity extends Activity {
                 }
             }
         };
-        new AlertDialog.Builder(this).setTitle(options.rationaleDialogTitle)
-                .setMessage(rationale)
-                .setPositiveButton(android.R.string.ok, listener)
-                .setNegativeButton(android.R.string.cancel, listener)
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        deny();
-                    }
-                }).create().show();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(options.rationaleDialogTitle);
+        builder.setMessage(rationale);
+
+        if (options.rationaleDialogCancelable) {
+            String negativeButtonText = options.rationaleDialogNegativeButton != null ? options.rationaleDialogNegativeButton : getString(android.R.string.cancel);
+            builder.setNegativeButton(negativeButtonText, listener)
+                    .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            deny();
+                        }
+                    });
+        } else {
+            builder.setCancelable(false);
+        }
+
+        String positiveButtonText = options.rationaleDialogPositiveButton != null ? options.rationaleDialogPositiveButton : getString(android.R.string.ok);
+        builder.setPositiveButton(positiveButtonText, listener)
+                .create().show();
     }
 
     @SuppressWarnings("NullableProblems")
