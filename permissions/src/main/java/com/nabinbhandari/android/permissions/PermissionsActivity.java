@@ -96,7 +96,7 @@ public class PermissionsActivity extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(options.rationaleDialogTitle);
         builder.setMessage(rationale);
 
-        if(options.rationaleDialogCancelable){
+        if (options.rationaleDialogCancelable) {
             String negativeButtonText = options.rationaleDialogNegativeButton != null ? options.rationaleDialogNegativeButton : getString(android.R.string.cancel);
             builder.setNegativeButton(negativeButtonText, listener)
                     .setOnCancelListener(new DialogInterface.OnCancelListener() {
