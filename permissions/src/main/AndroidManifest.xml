@@ -1,10 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nabinbhandari.android.permissions">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
 
         <activity
-            android:name=".PermissionsActivity"
+            android:name="com.nabinbhandari.android.permissions.PermissionsActivity"
             android:theme="@style/Permissions.TransparentTheme" />
 
     </application>

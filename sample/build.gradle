@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    namespace 'com.nabinbhandari.permissions.sample'
 
     defaultConfig {
         applicationId "com.nabinbhandari.permissions.sample"
         minSdkVersion 14
-        targetSdkVersion 27
+        compileSdk 34
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
@@ -15,6 +16,6 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    // implementation project(':permissions')
-    implementation 'com.nabinbhandari.android:permissions:3.8'
+    implementation project(':permissions')
+    //implementation 'com.nabinbhandari.android:permissions:3.8'
 }

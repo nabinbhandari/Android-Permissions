@@ -2,11 +2,11 @@
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:8.7.3'
 
         // Uncomment following two lines only during publishing.
         // classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
@@ -19,7 +19,7 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
+        mavenCentral()
         google()
     }
 }

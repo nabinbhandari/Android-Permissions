@@ -25,14 +25,13 @@ ext {
 }
 
 android {
-    compileSdkVersion 27
+    namespace "com.nabinbhandari.android"
 
     defaultConfig {
         //noinspection MinSdkTooLow
         minSdkVersion 1
-        targetSdkVersion 27
-        versionCode 3
-        versionName "$libraryVersion"
+        compileSdk 34
+        targetSdkVersion 34
     }
 }
 
