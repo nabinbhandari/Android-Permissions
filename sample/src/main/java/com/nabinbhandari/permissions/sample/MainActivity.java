@@ -32,12 +32,12 @@ public class MainActivity extends Activity {
         });
     }
 
-    public void requestCameraAndStorage(View view) {
-        String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    public void requestCameraAndContacts(View view) {
+        String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS};
         Permissions.check(this, permissions, null, null, new PermissionHandler() {
             @Override
             public void onGranted() {
-                Toast.makeText(MainActivity.this, "Camera+Storage granted.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Camera + Contacts granted.", Toast.LENGTH_SHORT).show();
             }
         });
     }
