@@ -9,3 +9,5 @@
 .externalNativeBuild
 /.idea/caches/
 .idea
+publish
+keys

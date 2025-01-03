@@ -3,10 +3,10 @@ Android Runtime Permission Library
 Easily handle runtime permissions in android.
 
  * Very short code.
- * Handle "don't ask again" condition.
+ * Handle "don't ask again" condition (In newer versions, multiple denials from user lead to this).
  * Can request from any context (Activity, Service, Fragment, etc).
  * Can check multiple permissions at once.
- * Light weight (12 KB).
+ * Light weight (13 KB).
  * Used by hundreds of developers.
  * Quick support.
  * Open source and fully customizable.
@@ -14,9 +14,9 @@ Easily handle runtime permissions in android.
 Dependency:
 -----------
 
-**Gradle (Jcenter)**
+**Gradle (MavenCentral)**
 ```
-implementation 'com.nabinbhandari.android:permissions:3.8'
+implementation 'com.nabinbhandari.android:permissions:4.0.0'
 ```
 
 Usage:
@@ -41,7 +41,7 @@ Permissions.check(this/*context*/, Manifest.permission.CALL_PHONE, null, new Per
 
 **Multiple permissions:**
 ```java
-String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS};
 Permissions.check(this/*context*/, permissions, null/*rationale*/, null/*options*/, new PermissionHandler() {
     @Override
     public void onGranted() {
@@ -83,7 +83,7 @@ Permissions.check(this/*context*/, permissions, rationale, options, new Permissi
 ---
 
 ## LICENSE
-    Copyright 2018 Nabin Bhandari
+    Copyright 2025 Nabin Bhandari
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

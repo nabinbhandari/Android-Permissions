@@ -17,5 +17,5 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation project(':permissions')
-    //implementation 'com.nabinbhandari.android:permissions:3.8'
+    //implementation 'com.nabinbhandari.android:permissions:4.0.0'
 }

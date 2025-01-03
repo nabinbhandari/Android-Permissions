@@ -1,0 +1,119 @@
+def signingProps = new Properties()
+def signingPropsFile = rootProject.file('keys/signing.properties')
+if (signingPropsFile.exists()) {
+    signingPropsFile.withInputStream { stream ->
+        signingProps.load(stream)
+    }
+    project.ext['signing.secretKeyRingFile'] = signingProps['signing.secretKeyRingFile']
+    project.ext['signing.keyId'] = signingProps['signing.keyId']
+    project.ext['signing.password'] = signingProps['signing.password']
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = project.group
+            artifactId = artifactId
+            version = project.version
+
+            afterEvaluate {
+                from components.release
+            }
+
+            pom {
+                name = projectName
+                description = projectDescription
+                url = "https://${githubRepo}"
+                licenses {
+                    license {
+                        name = licenseName
+                        url = licenseUrl
+                    }
+                }
+                developers {
+                    developer {
+                        id = developerId
+                        name = developerName
+                        email = developerEmail
+                    }
+                }
+                scm {
+                    connection = "scm:git:${githubRepo}.git"
+                    developerConnection = "scm:git:ssh://${githubRepo}.git"
+                    url = "https://${githubRepo}"
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "localMaven"
+            url = uri("file://${rootProject.projectDir}/publish")
+        }
+    }
+}
+
+afterEvaluate {
+    signing {
+        sign publishing.publications.release
+    }
+}
+
+tasks.register('zipRequiredFiles', Zip) {
+    group = "publishing"
+    description = "Package all files from the publish directory into a zip"
+
+    def publishRoot = "${rootProject.projectDir}/publish"
+    def zipName = "${artifactId}-${project.version}.zip"
+
+    // Check if the publish directory exists
+    def publishDir = file(publishRoot)
+    if (!publishDir.exists()) {
+        throw new GradleException("❌ Publish directory does not exist: ${publishRoot}")
+    }
+
+    def requiredFiles = [
+            "${artifactId}-${project.version}.aar",
+            "${artifactId}-${project.version}.aar.asc",
+            "${artifactId}-${project.version}.aar.md5",
+            "${artifactId}-${project.version}.aar.sha1",
+            "${artifactId}-${project.version}-sources.jar",
+            "${artifactId}-${project.version}-sources.jar.asc",
+            "${artifactId}-${project.version}-sources.jar.md5",
+            "${artifactId}-${project.version}-sources.jar.sha1",
+            "${artifactId}-${project.version}-javadoc.jar",
+            "${artifactId}-${project.version}-javadoc.jar.asc",
+            "${artifactId}-${project.version}-javadoc.jar.md5",
+            "${artifactId}-${project.version}-javadoc.jar.sha1",
+            "${artifactId}-${project.version}.pom",
+            "${artifactId}-${project.version}.pom.asc",
+            "${artifactId}-${project.version}.pom.md5",
+            "${artifactId}-${project.version}.pom.sha1"
+    ].collect { it.toString() }
+
+    archiveFileName = zipName
+    destinationDirectory = file(publishRoot)
+
+    from(fileTree(publishDir)) {
+        include '**/*'
+        eachFile { fileTreeElement ->
+            def fileName = fileTreeElement.file.name
+            if (!requiredFiles.contains(fileName)) {
+                fileTreeElement.exclude()
+            } else {
+                println "Including file: ${fileName}"
+            }
+        }
+        includeEmptyDirs = false
+    }
+
+    doLast {
+        def zipFile = file(publishRoot + "/" + zipName)
+        if (zipFile.exists()) {
+            println "✅ All files zipped at: ${zipFile}"
+        } else {
+            throw new GradleException("❌ Zip file was not created at: ${zipFile}")
+        }
+    }
+}

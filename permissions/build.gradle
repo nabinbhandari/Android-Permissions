@@ -1,19 +1,15 @@
-apply plugin: 'com.android.library'
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+    id 'signing'
+}
 
 ext {
-    bintrayRepo = 'android'
-    bintrayName = 'permissions'
+    artifactId = 'permissions'
 
-    publishedGroupId = 'com.nabinbhandari.android'
-    libraryName = 'permissions'
-    artifact = 'permissions'
-
-    libraryDescription = 'Library for easy handling of runtime permissions in android.'
-
-    siteUrl = 'https://github.com/nabinbhandari/Android-Permissions'
-    gitUrl = 'https://github.com/nabinbhandari/Android-Permissions.git'
-
-    libraryVersion = '3.8'
+    projectName = "Android-Permissions"
+    projectDescription = 'Android library to easily handle runtime permissions'
+    githubRepo = 'github.com/nabinbhandari/Android-Permissions'
 
     developerId = 'nabin'
     developerName = 'Nabin Bhandari'
@@ -21,17 +17,34 @@ ext {
 
     licenseName = 'The Apache Software License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
 }
 
+group = 'com.nabinbhandari.android'
+version = '4.0.0'
+
 android {
-    namespace "com.nabinbhandari.android"
+    namespace project.group
 
     defaultConfig {
         //noinspection MinSdkTooLow
         minSdkVersion 1
         compileSdk 34
         targetSdkVersion 34
+        versionCode 1
+        versionName project.version
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
     }
 }
 
@@ -39,6 +52,4 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-// Uncomment following two lines only during publishing.
-// apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-// apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+apply from: 'publishConfig.gradle'
